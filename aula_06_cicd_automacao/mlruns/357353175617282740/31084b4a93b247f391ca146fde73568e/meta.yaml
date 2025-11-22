@@ -1,0 +1,14 @@
+artifact_uri: file:///Users/luiz.braz/Personal-Labs/introducao-ciclo-de-vida-de-modelos/aula_06_cicd_automacao/mlruns/357353175617282740/31084b4a93b247f391ca146fde73568e/artifacts
+end_time: 1763855905140
+entry_point_name: ''
+experiment_id: '357353175617282740'
+lifecycle_stage: active
+run_id: 31084b4a93b247f391ca146fde73568e
+run_name: random_forest_training
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1763855903430
+status: 3
+tags: []
+user_id: luiz.braz

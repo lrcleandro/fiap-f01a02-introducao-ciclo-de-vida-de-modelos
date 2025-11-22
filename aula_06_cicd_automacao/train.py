@@ -28,10 +28,13 @@ warnings.filterwarnings('ignore')
 # ============================================================================
 
 
-PARAMS = {'max_depth': 5, 
-          'max_features': 7, 
-          'min_samples_split': 10, 
-          'n_estimators': 50}
+PARAMS = {
+    'max_depth': 5,
+    'max_features': 7,
+    'min_samples_split': 10,
+    'n_estimators': 50,
+    'random_state': 42
+}
 
 # AJUSTE DE HIPERPARÂMETROS (descomente para usar) -------------------
 # PARAMS = {

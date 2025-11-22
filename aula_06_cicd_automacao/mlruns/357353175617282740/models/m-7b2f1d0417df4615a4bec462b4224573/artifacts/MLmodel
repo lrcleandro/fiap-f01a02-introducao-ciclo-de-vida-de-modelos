@@ -1,0 +1,42 @@
+artifact_path: file:///Users/luiz.braz/Personal-Labs/introducao-ciclo-de-vida-de-modelos/aula_06_cicd_automacao/mlruns/357353175617282740/models/m-7b2f1d0417df4615a4bec462b4224573/artifacts
+flavors:
+  python_function:
+    code: code
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.13.7
+  sklearn:
+    code: code
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.7.2
+is_signature_from_type_hint: false
+mlflow_version: 3.6.0
+model_id: m-7b2f1d0417df4615a4bec462b4224573
+model_size_bytes: 201813
+model_uuid: m-7b2f1d0417df4615a4bec462b4224573
+prompts: null
+run_id: 31084b4a93b247f391ca146fde73568e
+saved_input_example_info:
+  artifact_path: input_example.json
+  pandas_orient: split
+  serving_input_path: serving_input_example.json
+  type: dataframe
+signature:
+  inputs: '[{"type": "long", "name": "age", "required": true}, {"type": "string",
+    "name": "sex", "required": true}, {"type": "string", "name": "cp", "required":
+    true}, {"type": "double", "name": "trestbps", "required": false}, {"type": "double",
+    "name": "chol", "required": false}, {"type": "boolean", "name": "fbs", "required":
+    false}, {"type": "string", "name": "restecg", "required": true}, {"type": "double",
+    "name": "thalch", "required": false}, {"type": "boolean", "name": "exang", "required":
+    false}, {"type": "double", "name": "oldpeak", "required": false}, {"type": "string",
+    "name": "slope", "required": false}, {"type": "double", "name": "ca", "required":
+    false}, {"type": "string", "name": "thal", "required": false}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "int64", "shape": [-1]}}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2025-11-22 23:58:23.484156'

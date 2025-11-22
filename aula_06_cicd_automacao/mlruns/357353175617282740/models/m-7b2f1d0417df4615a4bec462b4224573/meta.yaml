@@ -1,0 +1,10 @@
+artifact_location: file:///Users/luiz.braz/Personal-Labs/introducao-ciclo-de-vida-de-modelos/aula_06_cicd_automacao/mlruns/357353175617282740/models/m-7b2f1d0417df4615a4bec462b4224573/artifacts
+creation_timestamp: 1763855903468
+experiment_id: '357353175617282740'
+last_updated_timestamp: 1763855905106
+model_id: m-7b2f1d0417df4615a4bec462b4224573
+model_type: null
+name: model
+source_run_id: 31084b4a93b247f391ca146fde73568e
+status: 2
+status_message: null

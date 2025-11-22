@@ -1,6 +1,0 @@
-artifact_location: file:///Users/luiz.braz/Personal-Labs/introducao-ciclo-de-vida-de-modelos/aula_06_cicd_automacao/mlruns/286925318466199768
-creation_time: 1763855616871
-experiment_id: '286925318466199768'
-last_update_time: 1763855616871
-lifecycle_stage: active
-name: heart-disease-cicd
