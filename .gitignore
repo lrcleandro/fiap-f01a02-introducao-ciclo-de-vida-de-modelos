@@ -209,5 +209,6 @@ __marimo__/
 # MLFlow
 mlruns/
 !aula_06_cicd_automacao/mlruns/
+aula_06_cicd_automacao/mlruns_local/
 mlartifacts/
 .github/copilot-instructions.md
