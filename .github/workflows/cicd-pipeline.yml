@@ -48,6 +48,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: test  # Só executa se os testes passarem
     environment: mlops
+    env:
+      MLFLOW_TRACKING_FOLDER: mlruns_ci_snapshot
     
     # Configura MLflow tracking (pode usar servidor remoto ou local)
     
@@ -76,29 +78,25 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mlruns
-          path: aula_06_cicd_automacao/mlruns_ci/
+          path: aula_06_cicd_automacao/${{ env.MLFLOW_TRACKING_FOLDER }}/
           retention-days: 7
 
       - name: Commit snapshot do MLflow (opcional)
         if: success() && github.ref == 'refs/heads/main'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
         run: |
           if [ -z "$GITHUB_TOKEN" ]; then
             echo "GITHUB_TOKEN indisponível. Pulando commit do mlruns_ci."
             exit 0
           fi
           echo "GITHUB_TOKEN detectado (tamanho: ${#GITHUB_TOKEN} caracteres)."
-          if [ ! -d "aula_06_cicd_automacao/mlruns_ci" ]; then
-            echo "Diretório mlruns_ci inexistente. Nada para snapshot."
+          TRACKING_DIR="aula_06_cicd_automacao/${MLFLOW_TRACKING_FOLDER:-mlruns_ci_snapshot}"
+          if [ ! -d "$TRACKING_DIR" ]; then
+            echo "Diretório $TRACKING_DIR inexistente. Nada para snapshot."
             exit 0
           fi
-          SNAPSHOT_DIR="aula_06_cicd_automacao/mlruns_ci_snapshot"
-          rm -rf "$SNAPSHOT_DIR"
-          cp -R aula_06_cicd_automacao/mlruns_ci "$SNAPSHOT_DIR"
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add "$SNAPSHOT_DIR"
+          git add "$TRACKING_DIR"
           if git diff --cached --quiet; then
             echo "Sem alterações para commitar."
             exit 0

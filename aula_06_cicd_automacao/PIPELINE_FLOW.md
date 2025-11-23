@@ -63,7 +63,8 @@
 │  └───────────────────────────────────────────────────┘          │
 │                         │                                        │
 │                         │ Upload opcional do diretório usado no  │
-│                         │ MLflow (mlruns/ local, mlruns_ci no CI)│
+│                         │ MLflow (mlruns/ local,                 │
+│                         │ mlruns_ci_snapshot no CI)              │
 │                         │ Snapshot commitado p/ repo (usa        │
 │                         │ permissão contents:write do workflow)  │
 └────────────────────────┬────────────────────────────────────────┘
@@ -77,6 +78,12 @@
 │  └───────────────────────────────────────────────────┘          │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+> 💡 No GitHub Actions definimos `MLFLOW_TRACKING_FOLDER=mlruns_ci_snapshot`,
+o que garante que cada nova execução reutilize o mesmo diretório de tracking,
+mantendo o histórico e permitindo comparação com versões anteriores.
 
 ---
 
@@ -127,9 +134,7 @@
 aula_06_cicd_automacao/
 ├── mlruns/ (execuções locais)
 │   └── ...
-├── mlruns_ci/ (execuções via GitHub Actions)
-│   └── ...
-├── mlruns_ci_snapshot/ (conteúdo commitado pela Action)
+├── mlruns_ci_snapshot/ (execuções via GitHub Actions e commitado)
 │   └── <experiment_id>/
 │       └── <run_id>/
 │           ├── artifacts/model/        # Pipeline completo

@@ -163,11 +163,16 @@ def train_model(params=None, data_path='../data/heart_disease_uci.csv',
     tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
     if not tracking_uri:
         repo_dir = os.path.dirname(os.path.abspath(__file__))
-        tracking_folder = "mlruns_ci" if os.environ.get("CI") else "mlruns"
-        tracking_path = os.path.join(repo_dir, tracking_folder)
+        tracking_folder = os.environ.get("MLFLOW_TRACKING_FOLDER")
+        if not tracking_folder:
+            tracking_folder = "mlruns_ci" if os.environ.get("CI") else "mlruns"
+        tracking_path = tracking_folder
+        if not os.path.isabs(tracking_path):
+            tracking_path = os.path.join(repo_dir, tracking_path)
         os.makedirs(tracking_path, exist_ok=True)
         tracking_uri = f"file://{tracking_path}"
     mlflow.set_tracking_uri(tracking_uri)
+    print(f"MLflow tracking URI: {tracking_uri}")
 
     # Logar no MLflow
     mlflow.set_experiment(mlflow_experiment)
