@@ -62,7 +62,8 @@
 │  │  └─ Log no MLflow (params + métricas + modelo)   │          │
 │  └───────────────────────────────────────────────────┘          │
 │                         │                                        │
-│                         │ Upload opcional do diretório mlruns/   │
+│                         │ Upload opcional do diretório usado no  │
+│                         │ MLflow (mlruns/ local, mlruns_ci no CI)│
 └────────────────────────┬────────────────────────────────────────┘
                          │
                          ▼
@@ -122,7 +123,9 @@
 
 ```
 aula_06_cicd_automacao/
-├── mlruns/
+├── mlruns/ (execuções locais)
+│   └── ...
+├── mlruns_ci/ (execuções via GitHub Actions)
 │   └── <experiment_id>/
 │       └── <run_id>/
 │           ├── artifacts/model/        # Pipeline completo

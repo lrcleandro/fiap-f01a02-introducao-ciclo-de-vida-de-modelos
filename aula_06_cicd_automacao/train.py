@@ -5,6 +5,7 @@ e loga os resultados no MLflow.
 """
 
 import sys
+import os
 import warnings
 import argparse
 import pandas as pd
@@ -158,6 +159,16 @@ def train_model(params=None, data_path='../data/heart_disease_uci.csv',
     for metric_name, metric_value in metrics.items():
         print(f"  {metric_name}: {metric_value:.4f}")
     
+    # Configurar tracking URI
+    tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
+    if not tracking_uri:
+        repo_dir = os.path.dirname(os.path.abspath(__file__))
+        tracking_folder = "mlruns_ci" if os.environ.get("CI") else "mlruns"
+        tracking_path = os.path.join(repo_dir, tracking_folder)
+        os.makedirs(tracking_path, exist_ok=True)
+        tracking_uri = f"file://{tracking_path}"
+    mlflow.set_tracking_uri(tracking_uri)
+
     # Logar no MLflow
     mlflow.set_experiment(mlflow_experiment)
     
