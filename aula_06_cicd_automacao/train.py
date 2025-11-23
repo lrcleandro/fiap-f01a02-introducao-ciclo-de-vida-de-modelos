@@ -6,12 +6,13 @@ e loga os resultados no MLflow.
 
 import sys
 import os
+import json
 import warnings
 import argparse
+from datetime import datetime
 import pandas as pd
 import mlflow
 from mlflow import sklearn as mlflow_sklearn
-from mlflow.tracking import MlflowClient
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
@@ -21,6 +22,7 @@ from mlflow.models.signature import infer_signature
 
 # Importar transformers customizados
 from preprocessing import CategoricalEncoder, FeatureEngineer, MissingValueImputer
+from mlflow_utils import resolve_tracking_paths
 
 warnings.filterwarnings('ignore')
 
@@ -127,6 +129,7 @@ def train_model(params=None, data_path='../data/heart_disease_uci.csv',
     # Selecionar hiperparâmetros ativos e detectar variante cedo
     if params is None:
         params = ACTIVE_PARAMS
+    script_dir = os.path.dirname(os.path.abspath(__file__))
 
     run_name = "random_forest_training"
 
@@ -159,18 +162,7 @@ def train_model(params=None, data_path='../data/heart_disease_uci.csv',
     for metric_name, metric_value in metrics.items():
         print(f"  {metric_name}: {metric_value:.4f}")
     
-    # Configurar tracking URI
-    tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
-    if not tracking_uri:
-        repo_dir = os.path.dirname(os.path.abspath(__file__))
-        tracking_folder = os.environ.get("MLFLOW_TRACKING_FOLDER")
-        if not tracking_folder:
-            tracking_folder = "mlruns_ci" if os.environ.get("CI") else "mlruns"
-        tracking_path = tracking_folder
-        if not os.path.isabs(tracking_path):
-            tracking_path = os.path.join(repo_dir, tracking_path)
-        os.makedirs(tracking_path, exist_ok=True)
-        tracking_uri = f"file://{tracking_path}"
+    tracking_uri, tracking_dir = resolve_tracking_paths()
     mlflow.set_tracking_uri(tracking_uri)
     print(f"MLflow tracking URI: {tracking_uri}")
 
@@ -202,68 +194,28 @@ def train_model(params=None, data_path='../data/heart_disease_uci.csv',
         print(f"\n✓ Modelo logado no MLflow")
         print(f"  Run ID: {run.info.run_id}")
         print(f"  Model URI: {model_info.model_uri}")
-        
-        # Registro sempre realizado (baseline ou nova versão)
-        test_accuracy = metrics['test_accuracy']
-        print("\nRegistrando versão no Model Registry...")
-        try:
-            model_name = "heart-disease-model"
-            model_version = mlflow.register_model(
-                model_uri=model_info.model_uri,
-                name=model_name
-            )
-            print(f"  Modelo registrado: {model_name} | Versão: {model_version.version}")
 
-            # Comparar com versões anteriores para possível promoção
-            client = MlflowClient()
-            versions = client.search_model_versions(f"name='{model_name}'")
-            prev_versions = [v for v in versions if v.version != model_version.version]
+        metadata = {
+            "run_id": run.info.run_id,
+            "model_uri": model_info.model_uri,
+            "test_accuracy": metrics['test_accuracy'],
+            "logged_at": datetime.utcnow().isoformat()
+        }
 
-            if not prev_versions:
-                print("  Primeira versão registrada. Promovendo para Production.")
-                try:
-                    client.set_registered_model_alias(
-                        model_name,
-                        "Production",
-                        model_version.version
-                    )
-                    print(f"  ✓ Versão {model_version.version} promovida como alias 'Production'.")
-                except Exception as e:
-                    print(f"  ⚠ Falha ao definir alias Production: {e}")
-            else:
-                # Obter melhor acurácia anterior
-                best_prev_acc = None
-                best_prev_version = None
-                for v in prev_versions:
-                    run_id_prev = getattr(v, 'run_id', None)
-                    if not run_id_prev:
-                        continue
-                    try:
-                        run_prev = client.get_run(run_id_prev)
-                        acc_prev = run_prev.data.metrics.get('test_accuracy')
-                        if acc_prev is not None and (best_prev_acc is None or acc_prev > best_prev_acc):
-                            best_prev_acc = acc_prev
-                            best_prev_version = v.version
-                    except Exception:
-                        continue
-                if best_prev_acc is None:
-                    print("  Não foi possível recuperar acurácia das versões anteriores. Não promovido.")
-                else:
-                    print(f"  Melhor acurácia anterior: {best_prev_acc:.4f} (versão {best_prev_version})")
-                    if test_accuracy > best_prev_acc:
-                        try:
-                            client.set_registered_model_alias(
-                                model_name,
-                                "Production",
-                                model_version.version
-                            )
-                            print(f"  ✓ Nova versão {model_version.version} promovida a Production (acurácia {test_accuracy:.4f} > {best_prev_acc:.4f}).")
-                        except Exception as e:
-                            print(f"  ⚠ Falha ao definir alias Production: {e}")
-                    else:
-                        print(f"  ✗ Acurácia {test_accuracy:.4f} não supera {best_prev_acc:.4f}. Mantém Production existente.")
-        except Exception as e:
-            print(f"  ⚠ Erro ao registrar/promover modelo: {e}")
+        metadata_path = os.environ.get("MLFLOW_LATEST_RUN_FILE")
+        if not metadata_path and tracking_dir:
+            metadata_path = os.path.join(tracking_dir, "latest_run.json")
+
+        if metadata_path:
+            if not os.path.isabs(metadata_path):
+                metadata_path = os.path.join(script_dir, metadata_path)
+            os.makedirs(os.path.dirname(metadata_path), exist_ok=True)
+            with open(metadata_path, 'w', encoding='utf-8') as fp:
+                json.dump(metadata, fp, indent=2)
+            print(f"  Metadata salva em: {metadata_path}")
+            print("  ➜ Execute register_model.py para atualizar o Model Registry.")
+        else:
+            print("  ⚠ Não foi possível determinar caminho para salvar metadata do run.")
     
     print(f"\n{'='*60}")
     print(f"Treinamento concluído!")

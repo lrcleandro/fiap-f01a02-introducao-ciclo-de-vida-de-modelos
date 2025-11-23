@@ -71,7 +71,23 @@
                          │
                          ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│          JOB 3: RESUMO (summary)                                 │
+│          JOB 3: REGISTRAR E PROMOVER (register-model)            │
+│  ┌───────────────────────────────────────────────────┐          │
+│  │ 1. Checkout + setup Python                        │          │
+│  │ 2. Baixa artifact ``mlruns`` da etapa anterior    │          │
+│  │ 3. Executa: ``python register_model.py``          │          │
+│  │                                                   │          │
+│  │ O script lê ``latest_run.json`` e:                │          │
+│  │  • Registra uma nova versão no Model Registry     │          │
+│  │  • Compara ``test_accuracy`` com versões antigas  │          │
+│  │  • Limpa versões órfãs e só move o alias          │          │
+│  │    ``Production`` se houver ganho real            │          │
+│  └───────────────────────────────────────────────────┘          │
+└─────────────────────────────────────────────────────────────────┘
+                        │
+                        ▼
+┌─────────────────────────────────────────────────────────────────┐
+│          JOB 4: RESUMO (summary)                                 │
 │  ┌───────────────────────────────────────────────────┐          │
 │  │ Exibe mensagens finais e lembra de verificar o    │          │
 │  │ MLflow UI para visualizar runs e promoções.       │          │
@@ -106,24 +122,32 @@ mantendo o histórico e permitindo comparação com versões anteriores.
         │
         ▼
 ┌──────────────────────────────────────┐
-│ Sempre registra nova versão no       │
-│ MLflow Model Registry                │
+│ Salva latest_run.json com run_id,    │
+│ model_uri, métricas                  │
+└───────┬──────────────────────────────┘
+        │
+        ▼
+┌────────────────┐
+│  Registro      │
+└───────┬────────┘
+        │
+        ▼
+┌──────────────────────────────────────┐
+│ Carrega best accuracy anterior       │
+│ (via MLflowClient)                   │
 └───────┬──────────────────────────────┘
         │
         ├─ Primeira versão? → Sim
         │       │
-        │       └► Define alias Production automaticamente
+        │       └► Alias Production ← versão atual
         │
         └─ Primeira versão? → Não
                 │
                 ▼
-       Recupera melhor acurácia anterior
+       Nova acurácia > melhor anterior?
                 │
-                ├─ Nova acurácia > melhor anterior?
-                │        │
-                │        └► Atualiza alias Production para versão nova
-                │
-                └─ Caso contrário, mantém Production atual
+                ├─ Sim → Atualiza alias Production
+                └─ Não → Mantém versão anterior
 ```
 
 ---
@@ -135,12 +159,13 @@ aula_06_cicd_automacao/
 ├── mlruns/ (execuções locais)
 │   └── ...
 ├── mlruns_ci_snapshot/ (execuções via GitHub Actions e commitado)
-│   └── <experiment_id>/
-│       └── <run_id>/
-│           ├── artifacts/model/        # Pipeline completo
-│           ├── metrics/test_accuracy   # e demais métricas
-│           ├── params/*.yaml           # hiperparâmetros ativos
-│           └── tags/                   # metadados da execução
+│   ├── <experiment_id>/
+│   │   └── <run_id>/
+│   │       ├── artifacts/model/        # Pipeline completo
+│   │       ├── metrics/test_accuracy   # e demais métricas
+│   │       ├── params/*.yaml           # hiperparâmetros ativos
+│   │       └── tags/                   # metadados da execução
+│   └── latest_run.json                 # ponte entre treino e registro
 └── preprocessing.py                    # Referenciado no MLflow
 ```
 
@@ -165,6 +190,17 @@ Observação: o script continua imprimindo alerta e retornando código de erro s
 - O bloco ativo de hiperparâmetros fica em `train.py` (variável `ACTIVE_PARAMS`).
 - Para experimentar novos valores, comente/descomente o bloco desejado ou edite diretamente os parâmetros.
 - Basta commitar a mudança e o pipeline executará com essa configuração na próxima execução.
+
+### ▶️ Execução manual (fora do CI)
+
+```
+cd aula_06_cicd_automacao
+python train.py            # loga o run e atualiza latest_run.json
+python register_model.py   # registra e (se aplicável) promove
+```
+
+Mantendo `MLFLOW_TRACKING_FOLDER` apontando para o mesmo diretório, você garante
+que o registro manual reflita exatamente o que o pipeline faria.
 
 ---
 
