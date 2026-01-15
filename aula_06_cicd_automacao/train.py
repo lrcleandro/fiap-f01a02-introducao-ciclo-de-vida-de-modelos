@@ -30,23 +30,23 @@ warnings.filterwarnings('ignore')
 # Configurações de hiperparâmetros
 # ============================================================================
 
-PARAMS = {
-    'max_depth': 5,
-    'max_features': 7,
-    'min_samples_split': 10,
-    'n_estimators': 50,
-    'random_state': 42
-}
-
-# AJUSTE DE HIPERPARÂMETROS (descomente para usar) -------------------
 # PARAMS = {
-#     'n_estimators': 100,
-#     'max_depth': None,
-#     'min_samples_split': 2,
-#     'min_samples_leaf': 1,
-#     'max_features': 'sqrt',
+#     'max_depth': 5,
+#     'max_features': 7,
+#     'min_samples_split': 10,
+#     'n_estimators': 50,
 #     'random_state': 42
 # }
+
+# AJUSTE DE HIPERPARÂMETROS (descomente para usar) -------------------
+PARAMS = {
+    'n_estimators': 100,
+    'max_depth': None,
+    'min_samples_split': 2,
+    'min_samples_leaf': 1,
+    'max_features': 'sqrt',
+    'random_state': 42
+}
 
 
 # ============================================================================
