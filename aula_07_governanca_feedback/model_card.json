@@ -17,20 +17,20 @@
   },
   "metrics": {
     "model_performance": {
-      "accuracy": 0.8333333333333334,
-      "dataset_size": 48
+      "accuracy": 0.9,
+      "dataset_size": 400
     },
     "fairness_metrics": {
       "accuracy_by_region": {
-        "Norte": 0.875,
-        "Sul": 0.7916666666666666
+        "Norte": 0.892018779342723,
+        "Sul": 0.9090909090909091
       },
-      "max_difference": 0.08333333333333337
+      "max_difference": 0.01707212974818606
     }
   },
   "training_data": {
     "dataset": "Synthetic Credit Approval Demo",
-    "size": 192,
+    "size": 1600,
     "preprocessing": "StandardScaler para numéricos + OneHotEncoder para categóricos"
   },
   "ethical_considerations": {
