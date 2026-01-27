@@ -211,29 +211,3 @@ Se não configurado, usa MLflow local (`file:./mlruns`)
 ✅ **Testes Automatizados**: validação contínua do código  
 ✅ **Model Registry**: gestão de versões e promoção  
 ✅ **Pipeline Sklearn**: encapsulamento de pré-processamento  
-
----
-
-## 📝 Próximos Passos
-
-- Adicionar mais testes (ex: validação de schema dos dados)
-- Implementar deploy automático após registro no Model Registry
-- Integrar com ferramentas de monitoramento (ex: Evidently)
-- Adicionar notificações (Slack, email) em caso de falha
-
----
-
-## 🎓 Para o Instrutor
-
-Este exemplo é propositalmente **simples e didático** para facilitar o aprendizamento:
-- Usa apenas scikit-learn e MLflow (sem complexidade extra)
-- Pipeline baseado na Aula 04 (familiar aos alunos)
-- Testes básicos mas representativos
-- Workflow GitHub Actions bem comentado
-- Permite experimentação local antes do CI/CD
-
-Os alunos podem:
-1. Rodar localmente e entender cada componente
-2. Comentar/descomentar `ACTIVE_PARAMS` para trocar variante
-3. Comparar baseline vs otimizado no MLflow UI
-4. Aprender conceitos de CI/CD de forma prática
