@@ -40,8 +40,8 @@ warnings.filterwarnings('ignore')
 
 # AJUSTE DE HIPERPARÂMETROS (descomente para usar) -------------------
 PARAMS = {
-    'n_estimators': 100,
-    'max_depth': None,
+    'n_estimators': 150,
+    'max_depth': 10,
     'min_samples_split': 2,
     'min_samples_leaf': 1,
     'max_features': 'sqrt',
