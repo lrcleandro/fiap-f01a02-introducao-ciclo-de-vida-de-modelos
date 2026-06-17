@@ -142,23 +142,23 @@ jobs:
           name: mlruns
           path: aula_06_cicd_automacao
 
-      - name: Ajustar diretório do artifact
-        run: |
-          SRC="aula_06_cicd_automacao/${MLFLOW_TRACKING_FOLDER}"
-          DEST="aula_06_cicd_automacao/${MLFLOW_TRACKING_FOLDER}"
-          if [ -d "$SRC" ]; then
-            rm -rf "$DEST"
-            mv "$SRC" "$DEST"
-          fi
+      # - name: Ajustar diretório do artifact
+      #   run: |
+      #     SRC="aula_06_cicd_automacao/${MLFLOW_TRACKING_FOLDER}"
+      #     DEST="aula_06_cicd_automacao/${MLFLOW_TRACKING_FOLDER}"
+      #     if [ -d "$SRC" ]; then
+      #       rm -rf "$DEST"
+      #       mv "$SRC" "$DEST"
+      #     fi
 
-      - name: Listar conteúdo recebido
-        run: |
-          ls -R aula_06_cicd_automacao/${{ env.MLFLOW_TRACKING_FOLDER }} | head -n 200 || true
+      # - name: Listar conteúdo recebido
+      #   run: |
+      #     ls -R aula_06_cicd_automacao/${{ env.MLFLOW_TRACKING_FOLDER }} | head -n 200 || true
 
-      - name: Verificar metadata
-        run: |
-          cd aula_06_cicd_automacao/${{ env.MLFLOW_TRACKING_FOLDER }}
-          ls -l latest_run.json
+      # - name: Verificar metadata
+      #   run: |
+      #     cd aula_06_cicd_automacao/${{ env.MLFLOW_TRACKING_FOLDER }}
+      #     ls -l latest_run.json
 
       - name: Registrar modelo no MLflow
         run: |
