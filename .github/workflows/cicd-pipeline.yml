@@ -161,7 +161,7 @@ jobs:
       - name: Registrar modelo no MLflow
         run: |
           cd aula_06_cicd_automacao
-          python register_model.py --metadata-path ./mlflow.db
+          python register_model.py --metadata-path mlflow.db
   
   # Job 3: Resumo
   summary:
