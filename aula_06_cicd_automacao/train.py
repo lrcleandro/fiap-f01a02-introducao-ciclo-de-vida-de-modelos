@@ -201,20 +201,20 @@ def train_model(params=None, data_path='../data/heart_disease_uci.csv',
             "logged_at": datetime.utcnow().isoformat()
         }
 
-        metadata_path = os.environ.get("MLFLOW_LATEST_RUN_FILE")
-        if not metadata_path and tracking_dir:
-            metadata_path = os.path.join(tracking_dir, "latest_run.json")
+        # metadata_path = os.environ.get("MLFLOW_LATEST_RUN_FILE")
+        # if not metadata_path and tracking_dir:
+        #     metadata_path = os.path.join(tracking_dir, "latest_run.json")
 
-        if metadata_path:
-            if not os.path.isabs(metadata_path):
-                metadata_path = os.path.join(script_dir, metadata_path)
-            os.makedirs(os.path.dirname(metadata_path), exist_ok=True)
-            with open(metadata_path, 'w', encoding='utf-8') as fp:
-                json.dump(metadata, fp, indent=2)
-            print(f"  Metadata salva em: {metadata_path}")
-            print("  ➜ Execute register_model.py para atualizar o Model Registry.")
-        else:
-            print("  ⚠ Não foi possível determinar caminho para salvar metadata do run.")
+        # if metadata_path:
+        #     if not os.path.isabs(metadata_path):
+        #         metadata_path = os.path.join(script_dir, metadata_path)
+        #     os.makedirs(os.path.dirname(metadata_path), exist_ok=True)
+        #     with open(metadata_path, 'w', encoding='utf-8') as fp:
+        #         json.dump(metadata, fp, indent=2)
+        #     print(f"  Metadata salva em: {metadata_path}")
+        #     print("  ➜ Execute register_model.py para atualizar o Model Registry.")
+        # else:
+        #     print("  ⚠ Não foi possível determinar caminho para salvar metadata do run.")
     
     print(f"\n{'='*60}")
     print(f"Treinamento concluído!")
