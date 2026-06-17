@@ -79,21 +79,21 @@ def register_and_promote(model_name: str, metadata_path: Optional[str]) -> None:
     mlflow.set_tracking_uri(tracking_uri)
     print(f"MLflow tracking URI: {tracking_uri}")
 
-    metadata_file = load_metadata(metadata_path, tracking_dir)
-    print(f"Carregando metadata: {metadata_file}")
-    with open(metadata_file, 'r', encoding='utf-8') as fp:
-        data = json.load(fp)
+    # metadata_file = load_metadata(metadata_path, tracking_dir)
+    # print(f"Carregando metadata: {metadata_file}")
+    # with open(metadata_file, 'r', encoding='utf-8') as fp:
+    #     data = json.load(fp)
 
-    run_id = data.get('run_id')
-    model_uri = data.get('model_uri')
-    test_accuracy = data.get('test_accuracy')
+    # run_id = data.get('run_id')
+    # model_uri = data.get('model_uri')
+    # test_accuracy = data.get('test_accuracy')
 
-    if not run_id or not model_uri:
-        raise ValueError("Metadata incompleta: run_id ou model_uri ausentes.")
+    # if not run_id or not model_uri:
+    #     raise ValueError("Metadata incompleta: run_id ou model_uri ausentes.")
 
     cleanup_orphan_versions(tracking_dir, model_name)
     print("Registrando nova versão no Model Registry...")
-    model_version = mlflow.register_model(model_uri=model_uri, name=model_name)
+    model_version = mlflow.register_model(model_uri=tracking_uri, name=model_name)
     wait_for_version_files(tracking_dir, model_name, model_version.version)
     print(f"  Modelo: {model_name} | Versão criada: {model_version.version}")
 

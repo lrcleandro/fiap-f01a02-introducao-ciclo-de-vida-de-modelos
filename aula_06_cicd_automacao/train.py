@@ -200,6 +200,8 @@ def train_model(params=None, data_path='../data/heart_disease_uci.csv',
             "test_accuracy": metrics['test_accuracy'],
             "logged_at": datetime.utcnow().isoformat()
         }
+        
+        print(metadata)
 
         # metadata_path = os.environ.get("MLFLOW_LATEST_RUN_FILE")
         # if not metadata_path and tracking_dir:

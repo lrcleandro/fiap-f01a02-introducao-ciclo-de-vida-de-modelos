@@ -9,19 +9,21 @@ def resolve_tracking_paths() -> Tuple[str, Optional[str]]:
     tracking_uri_env = os.environ.get("MLFLOW_TRACKING_URI")
     tracking_dir: Optional[str] = None
 
-    if tracking_uri_env:
-        tracking_uri = tracking_uri_env
-        if tracking_uri.startswith("file://"):
-            tracking_dir = tracking_uri[len("file://") :]
-    else:
-        repo_dir = os.path.dirname(os.path.abspath(__file__))
-        tracking_folder = os.environ.get("MLFLOW_TRACKING_FOLDER")
-        if not tracking_folder:
-            tracking_folder = "mlruns_ci_snapshot" if os.environ.get("CI") else "mlruns_local"
-        if not os.path.isabs(tracking_folder):
-            tracking_folder = os.path.join(repo_dir, tracking_folder)
-        os.makedirs(tracking_folder, exist_ok=True)
-        tracking_dir = tracking_folder
-        tracking_uri = f"file://{tracking_dir}"
+    tracking_uri = 'sqlite:///mlflow_ci.db' if os.environ.get("CI") else os.environ.get("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db")
+
+    # if tracking_uri_env:
+    #     tracking_uri = tracking_uri_env
+    #     if tracking_uri.startswith("file://"):
+    #         tracking_dir = tracking_uri[len("file://") :]
+    # else:
+    #     repo_dir = os.path.dirname(os.path.abspath(__file__))
+    #     tracking_folder = os.environ.get("MLFLOW_TRACKING_FOLDER")
+    #     if not tracking_folder:
+    #         tracking_folder = "mlruns_ci_snapshot" if os.environ.get("CI") else "mlruns_local"
+    #     if not os.path.isabs(tracking_folder):
+    #         tracking_folder = os.path.join(repo_dir, tracking_folder)
+    #     os.makedirs(tracking_folder, exist_ok=True)
+    #     tracking_dir = tracking_folder
+    #     tracking_uri = f"file://{tracking_dir}"
 
     return tracking_uri, tracking_dir
