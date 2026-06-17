@@ -187,7 +187,8 @@ def train_model(params=None, data_path='../data/heart_disease_uci.csv',
             name="model",
             code_paths=["preprocessing.py"],
             signature=signature,
-            input_example=X_train.iloc[:5]
+            input_example=X_train.iloc[:5],
+            serialization_format="cloudpickle"
         )
         
         print(f"\n✓ Modelo logado no MLflow")
