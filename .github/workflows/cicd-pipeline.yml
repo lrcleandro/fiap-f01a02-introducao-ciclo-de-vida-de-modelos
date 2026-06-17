@@ -84,7 +84,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mlruns
-          path: aula_06_cicd_automacao/${{ env.MLFLOW_TRACKING_FOLDER }}/
+          path: |
+            aula_06_cicd_automacao/${{ env.MLFLOW_TRACKING_FOLDER }}/
+            aula_06_cicd_automacao/mlflow.db
           retention-days: 7
 
       - name: Commit snapshot do MLflow (opcional)
@@ -142,7 +144,7 @@ jobs:
 
       - name: Ajustar diretório do artifact
         run: |
-          SRC="aula_06_cicd_automacao/aula_06_cicd_automacao/${MLFLOW_TRACKING_FOLDER}"
+          SRC="aula_06_cicd_automacao/${MLFLOW_TRACKING_FOLDER}"
           DEST="aula_06_cicd_automacao/${MLFLOW_TRACKING_FOLDER}"
           if [ -d "$SRC" ]; then
             rm -rf "$DEST"
