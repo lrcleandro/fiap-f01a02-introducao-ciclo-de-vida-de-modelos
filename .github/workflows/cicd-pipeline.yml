@@ -17,6 +17,7 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   MLFLOW_TRACKING_URI: sqlite:///mlflow.db
   MLFLOW_ALLOW_FILE_STORE: false
+  MLFLOW_TRACKING_FOLDER: .
 
 permissions:
   contents: write
@@ -160,7 +161,7 @@ jobs:
       - name: Registrar modelo no MLflow
         run: |
           cd aula_06_cicd_automacao
-          python register_model.py
+          python register_model.py --metadata-path ./mlflow.db
   
   # Job 3: Resumo
   summary:
